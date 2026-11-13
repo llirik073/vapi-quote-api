@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const PAY_TO = "0x431Bd7c4e864D9c88691B6577ca66F90Dd98Fb85";
 
 const facilitator = new HTTPFacilitatorClient({
-  url: "https://x402.org/facilitator"
+  url: "https://facilitator.payai.network"
 });
 
 const resourceServer = new x402ResourceServer(facilitator);
