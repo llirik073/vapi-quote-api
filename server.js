@@ -1,8 +1,50 @@
 
 import express from "express";
+import { paymentMiddleware } from "@x402/express";
+import {
+  x402ResourceServer,
+  HTTPFacilitatorClient
+} from "@x402/core/server";
+import { ExactEvmScheme } from "@x402/evm/exact/server";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const PAY_TO = "0x431Bd7c4e864D9c88691B6577ca66F90Dd98Fb85";
+
+const facilitator = new HTTPFacilitatorClient({
+  url: "https://x402.org/facilitator"
+});
+
+const resourceServer = new x402ResourceServer(facilitator);
+resourceServer.register("eip155:8453", new ExactEvmScheme());
+
+app.get("/", (req, res) => {
+  res.json({
+    name: "vAPI Quote API",
+    status: "online",
+    version: "1.1.0",
+    payment: "x402"
+  });
+});
+
+app.use(
+  paymentMiddleware(
+    {
+      "GET /quote": {
+        accepts: {
+          scheme: "exact",
+          price: "$0.001",
+          network: "eip155:8453",
+          payTo: PAY_TO
+        },
+        description: "Get a random inspirational quote",
+        mimeType: "application/json"
+      }
+    },
+    resourceServer
+  )
+);
 
 const quotes = [
   "Every great idea starts with one small step.",
@@ -11,14 +53,6 @@ const quotes = [
   "The best time to start is now.",
   "Success comes from consistency."
 ];
-
-app.get("/", (req, res) => {
-  res.json({
-    name: "vAPI Quote API",
-    status: "online",
-    version: "1.0.0"
-  });
-});
 
 app.get("/quote", (req, res) => {
   const quote = quotes[
