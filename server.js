@@ -10,7 +10,7 @@ import { ExactEvmScheme } from "@x402/evm/exact/server";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const PAY_TO = "0x431Bd7c4e864D9c88691B6577ca66F90Dd98Fb85";
+const PAY_TO = "0x40C581FE1d2d8Ff7a29393ba0B4c0153cBE6e38B";
 
 const facilitator = new HTTPFacilitatorClient({
   url: "https://facilitator.payai.network"
